@@ -1,46 +1,45 @@
-# ���ݿ��ӻ�
-# ��ֵ�����������Ϳ��ӻ�
-# ��λ�����ķ�λ�� �����Ƚ���ͳ�������ܼ���ֵӰ��С��
-# ��ֵ����׼�ֵ�� �����Ƚ���ͳ�������ܼ���ֵӰ���
+# 数据可视化
+# 数值变量的特征和可视化
+# 中位数，四分位差 属于稳健的统计量（受极端值影响小）
+# 均值，标准差，值域 不是稳健的统计量（受极端值影响大）
 
 x <- c(1,9,2,8,3,9,4,5,7,6)
-# ƽ��ֵ
+# 平均值
 mean(x)
-# ��λ��
+# 中位数
 median(x)
-# ����
+# 方差
 var(x)
-# ��׼��
+# 标准差
 sd(x)
 summary(x)
 
-# Lattice ��ͼϵͳ
-# ��ͬ���ٳ��ֵ�Ƶ��(��״ͼ)
+# Lattice 绘图系统
+# 不同风速出现的频率(柱状图)
 hist(airquality$Wind,xlab="wind")
 
-# ��ͼ
+# 箱图
 boxplot(airquality$Wind,xlab="wind",ylab="Speed(mph)")
 
-# ��ͼ���� ��ֵ������Wind���ͷ��������Month����Ĺ�ϵ
+# 箱图考察 数值变量（Wind）和分类变量（Month）间的关系
 boxplot(Wind~Month,airquality,xlab="Month",ylab="Speed(mph)")
 
-# ɢ��ͼ
+# 散点图
 plot(airquality$Wind,airquality$Temp)
 with(airquality,plot(Wind,Temp,main="Wind and Temp in NYC"))
 
-
-# �Ȼ���ɢ��ͼ�� x ��� y ��
+# 先画出散点图的 x 轴和 y 轴
 with(airquality,plot(
   Wind,
   Temp,
   main="Wind and Temp in NYC",
   type="n"
-  ))
-# ɸѡ�·ݵ�ֵ�ٻ�����������
+))
+# 筛选月份的值再画到该坐标上
 with(
   subset(airquality,Month==9),
   points(Wind,Temp,col="red")
-  )
+)
 with(
   subset(airquality,Month==5),
   points(Wind,Temp,col="blue")
@@ -51,20 +50,20 @@ with(
   points(Wind,Temp,col="black")
 )
 
-# ��� �¶Ⱥͷ��٣���������Ա�����
+# 拟合 温度和风速（因变量和自变量）
 fit <- lm(Temp~Wind,airquality)
 abline(fit,lwd=2)
 
-# ����ͬ��ɫ��ɢ�����ע��
+# 给不同颜色的散点加上注释
 legend("topright",pch=1,
        col=c("red","blue","black"),
        legend=c("Sep","May","Other")
-       )
+)
 
 
-# ggplot2 ��ͼϵͳ ��Ҫ�� Tools �а�װ�ð�
-# ��
-# Data       ����Ȥ�ı�����data frame��
+# ggplot2 绘图系统 需要在 Tools 中安装该包
+# 层
+# Data       感兴趣的变量（data frame）
 # Aesthetics  x-axis/y-axis/color/fill/size/labels/alpha/shape/linear width/linear type
 # Geometries  point/line/histogram/bar/boxplot
 # Facets      columns/rows
@@ -72,94 +71,91 @@ legend("topright",pch=1,
 # Coordinates cartesian/fixed/polar/limits
 # Themes      non-data ink
 
-# ��ͼ����
+# 绘图函数
 
 # qplot
 library(ggplot2)
 
-# Ĭ�ϻ���ݽ�����ɫ������ɢ��ͼ
+# 默认会根据渐变颜色来绘制散点图
 qplot(Wind,Temp,data=airquality,color=Month)
-# ���·����óɷ������
+# 将月份设置成分类变量
 airquality$Month <- factor(airquality$Month)
-# �ٴλ�ͼ������������ʹ�ò�ͬ����ɫ
+# 再次绘图，则三点则是使用不同的颜色
 qplot(Wind,Temp,data=airquality,color=Month)
 
 qplot(Wind,Temp,data=airquality,color=Month,
       xlab="Wind (mph)", ylab="Temperature", main="Winds Temp")
-# Ҳ����ָ��ɢ�����ɫ
+# 也可以指定散点的颜色
 qplot(Wind,Temp,data=airquality,color=I("red"))
 
-# ��ϵ�
+# 拟合点
 qplot(Wind,Temp,data=airquality,geom=c("point","smooth"))
-# ������ϲ���ʾ���ߣ���ɫ���ִ�����������
+# 分类拟合并显示曲线，灰色部分代表置信区间
 qplot(Wind,Temp,data=airquality,geom=c("point","smooth"),color=Month)
 
-# һ������
+# 一行五列
 qplot(Wind, Temp, data = airquality, facets = .~Month)
-# ����һ��
+# 五行一列
 qplot(Wind, Temp, data = airquality, facets = Month~.)
 
 qplot(Wind,data = airquality)
-# ���·ݷֱ𻭳����ٶ�Ӧ��״ͼ
+# 按月份分别画出风速对应柱状图
 qplot(Wind,data = airquality, facets = Month~.)
-# �ۼ���״ͼ
+# 累加柱状图
 qplot(Wind,data = airquality, fill = Month)
-# Ƶ�ʷֲ���
+# 频率分布线
 qplot(Wind,data = airquality, geom = "density")
-# ���·ݻ�����Ƶ����
+# 按月份画出分频率线
 qplot(Wind,data = airquality, geom = "density", color=Month)
 
 
-# ��ɫ��
-# �����ɫ�壺sequential/diverging/qualitative
-# ��ɫ����Ϣ����colorRamp/colorRampPalette���ʹ��
+# 调色板
+# 三类调色板：sequential/diverging/qualitative
+# 调色板信息可与colorRamp/colorRampPalette结合使用
 
-# ����RGB���ݣ�������0~1��ʾ�𽥱�ʾ����ɫ
+# 返回RGB数据，并且由0~1表示逐渐表示渐变色
 pal <- colorRamp(c("red","blue"))
 pal(0)
 pal(1)
 pal(0.5)
 pal(seq(0,1,len=10))
 
-# ���ص���16���Ƶ���ɫ
+# 返回的是16进制的颜色
 pal <- colorRampPalette(c("red","yellow"))
 pal(1)
 pal(2)
 pal(10)
 
-# ������ɫ���RColorBrewer���谲װ��
+# 加载配色插件RColorBrewer（需安装）
 library(RColorBrewer)
 brewer.pal.info
 
-# ����ɫ����ȡ3����ɫ
+# 在绿色里面取3个颜色
 cols <- brewer.pal(3,"Greens")
 pal <- colorRampPalette(cols)
 image(volcano,col = pal(20))
 
-# �鿴��ɫ���ж���ʲô��ɫ
+# 查看调色板中都有什么颜色
 display.brewer.pal(3,"Greens");
-# Ʃ��˵�鿴RColorBrewer����BrBG��ɫ�����������11����ɫ
+# 譬如说查看RColorBrewer插件里，BrBG调色板的所包含的11种颜色
 display.brewer.pal(11,"BrBG");
 
 
-# Rͼ���豸
-# ����˵���ǽ�ͼ���������Ļ����PDF����ͼ���ļ���
+# R图像设备
+# 简单来说就是将图形输出到屏幕或者PDF或者图像文件中
 
-# ���ù����ռ�
+# 设置工作空间
 setwd("C:/workspace/RProject")
-# �½�һ��pdf�ļ�
+# 新建一个pdf文件
 pdf(file = "myFig.pdf")
-# ��һ���򵥵�ͼ��������һ�仰ָ����pdf�����½�������ͼ��
+# 画一个简单的图，由于上一句话指定了pdf，右下角则不生成图像
 with(airquality,plot(Wind,Temp,main = "Wind and Temp in NYC"))
-# ��Ҫ����������仰,���ڵ�ǰ����·��������pdf
+# 不要忘记下面这句话,会在当前工作路径下生成pdf
 dev.off()
 
-# �������½�����ɢ��ͼ
+# 会在右下角生成散点图
 with(airquality,plot(Wind,Temp,main = "Wind and Temp in NYC"))
-# ʹ�øú����ͽ����½����ɵ�ͼ�����pngͼ����
+# 使用该函数就将右下角生成的图输出到png图像中
 dev.copy(png,file="myCopy.png")
-# ��Ҫ���ǵ��ã������һֱ���ͼ��png�ļ���
+# 不要忘记调用，否则会一直输出图像到png文件中
 dev.off()
-
-
-
