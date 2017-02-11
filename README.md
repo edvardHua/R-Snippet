@@ -7,6 +7,7 @@ R 语言 代码片段
     │   ├── passenger.csv (这里使用的数据)
     ├── Cluster
     │   └── agglomerative_hierarchical_cluster_analysis.R (凝聚层级聚类分析)
+    │   └── partitioning_analysis.R (划分聚类分析)
     ├── Foundation
     │   ├── data_structure.R (常用数据类型)
     │   ├── important_function.R (重要函数)
